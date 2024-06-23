@@ -43,7 +43,7 @@ public class User implements UserDetails {
     @Column(name = "balance")
     private double balance;
 
-
+    private String token;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
