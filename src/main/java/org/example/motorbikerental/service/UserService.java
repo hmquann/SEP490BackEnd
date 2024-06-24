@@ -18,10 +18,11 @@ public interface UserService {
 
     User updateUser(Long id, User user);
 
-    org.example.motorbikerental.entity.User updateUser(Long id, org.example.motorbikerental.entity.User user);
 
     void deleteUser(Long id);
-    List<org.example.motorbikerental.entity.User> getAllUser();
+
+    void updateUserBalance(Long id, double balance);
+
 
 
 
