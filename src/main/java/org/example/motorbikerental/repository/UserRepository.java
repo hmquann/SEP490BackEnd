@@ -1,5 +1,4 @@
 package org.example.motorbikerental.repository;
-
 import jakarta.transaction.Transactional;
 import org.example.motorbikerental.entity.Role;
 import org.example.motorbikerental.entity.User;
