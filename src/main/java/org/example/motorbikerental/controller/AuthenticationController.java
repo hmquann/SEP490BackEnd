@@ -23,15 +23,16 @@ public class AuthenticationController {
     private final UserService userService;
 
 
-//    @RequestMapping (value="/signup",method =RequestMethod.POST)
-//    public ResponseEntity<User> signUp(@RequestBody SignupRequest signupRequest, HttpServletRequest httpServletRequest){
-//        User user = authenticationService.signUp(signupRequest);
-//        String url = httpServletRequest.getRequestURL().toString()+"/verify/"+user.getToken();
-//        String newUrl = url.replace("localhost:8080", "localhost:3000");
-//        emailService.sendVerificationEmail(user, newUrl.replace(httpServletRequest.getServletPath(),""));
-//        return ResponseEntity.ok(user);
-//
-//    }
+
+    @RequestMapping (value="/signup",method =RequestMethod.POST)
+    public ResponseEntity<User> signUp(@RequestBody SignupRequest signupRequest, HttpServletRequest httpServletRequest){
+        User user = authenticationService.signUp(signupRequest);
+        String url = httpServletRequest.getRequestURL().toString()+"/verify/"+user.getToken();
+        String newUrl = url.replace("localhost:8080", "localhost:3000");
+        emailService.sendVerificationEmail(user, newUrl.replace(httpServletRequest.getServletPath(),""));
+        return ResponseEntity.ok(user);
+
+    }
 
     @CrossOrigin
     @PostMapping("/signin")

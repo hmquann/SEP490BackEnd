@@ -16,11 +16,12 @@ public interface UserService {
 
     User getUserByToken(String token);
 
+
     User updateUser(Long id, User user);
     void deleteUser(Long id);
     List<User> getAllUser();
     void toggleUserActiveStatus(Long id);
-
+    void updateUserBalance(Long id, double balance);
     void activeUser(Long id);
     void updateUserBalance(Long id, double balance);
     void activeUserStatus(Long id);
