@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,10 +59,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with token " + token + " not found"));
     }
 
-    @Override
-    public org.springframework.security.core.userdetails.User updateUser(Long id, org.springframework.security.core.userdetails.User user) {
-        return null;
-    }
+
 
     @Override
     public User updateUser(Long id, User user) {
@@ -103,9 +101,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUser() {
-        return userRepository.findAll();
+    public void updateUserBalance(Long id, BigDecimal balance) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            BigDecimal currentBalance = user.getBalance();
+            if (currentBalance != null) {
+
+                BigDecimal newBalance = currentBalance.add(balance);
+                user.setBalance(newBalance);
+                userRepository.save(user);
+            } else {
+            }
+        } else {
+            System.out.println("User with ID " + id + " not found.");
+        }
     }
+
+    @Override
+    public void withDrawMoney(Long id, BigDecimal amount) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            BigDecimal currentBalance = user.getBalance();
+            if(currentBalance.compareTo(amount) < 0) {
+                throw new Exception("Insufficient money");
+            }
+            BigDecimal newBalance = currentBalance.subtract(amount);
+            user.setBalance(newBalance);
+            userRepository.save(user);
+
+        }
+
+}
+
 
 
 }
