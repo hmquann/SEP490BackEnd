@@ -23,8 +23,8 @@ public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
 
     @Override
-    public List<Brand> getAllBrand() {
-        return brandRepository.findAll();
+    public Page<Brand> getBrandWithPagination(int page, int pageSize){
+        return brandRepository.findAll(PageRequest.of(page,pageSize));
     }
 
 
@@ -37,7 +37,31 @@ public class BrandServiceImpl implements BrandService {
         return brandRepository.save(brand);
     }
 
+    @Override
+    public void deleteBrand(Long id) {
+        if (!brandRepository.existsByBrandId(id)) {
+            throw new EntityNotFoundException("Brand with ID " + id + " not found");
+        }
+        brandRepository.deleteById(id);
+    }
 
+    @Override
+    public Brand updateBrand(Long id, Brand brand) {
+        Optional<Brand> brandOptional = brandRepository.findById(id);
+        if (brandOptional.isEmpty()) {
+            throw new EntityNotFoundException("Brand with ID " + id + " not found");
+        }else{
+            Brand brandToUpdate = brandOptional.get();
+            if(brand.getBrandName() != null && !brand.getBrandName().equals(brandToUpdate.getBrandName())){
+                if(brandRepository.existsByBrandName(brand.getBrandName())){
+                    throw new ValidationException("Brand name already exists");
+                }
+                brandToUpdate.setBrandName(brand.getBrandName());
+            }
+            brandToUpdate.setOrigin(brand.getOrigin());
+            return brandRepository.save(brandToUpdate);
+        }
+    }
 
 
 }
