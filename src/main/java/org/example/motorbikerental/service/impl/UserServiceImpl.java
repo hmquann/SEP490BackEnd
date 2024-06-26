@@ -40,6 +40,21 @@ public class UserServiceImpl implements UserService {
         };
     }
 
+
+    @Override
+    public void activeUser(Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setActive(true);
+        userRepository.save(user);
+    }
+    public void toggleUserActiveStatus(Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setActive(!user.isActive());
+        userRepository.save(user);
+    }
+
+
+
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id)
@@ -59,7 +74,39 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with token " + token + " not found"));
     }
 
+                .orElseThrow(() -> new UserNotFoundException("User with token " + token + " not found"));
+    }
 
+    @Override
+    public User updateUser(Long id, User user) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User with id " + id + " not found");
+        }
+        if (optionalUser.isPresent()) {
+            User existUser = optionalUser.get();
+
+            existUser.setFirstName(user.getFirstName());
+            existUser.setLastName(user.getLastName());
+            existUser.setEmail(user.getEmail());
+            existUser.getRoles().clear();
+            for (Role role : user.getRoles()) {
+                // Kiểm tra xem vai trò đã tồn tại chưa
+                Role existingRole = roleRepository.findByName(role.getName());
+                if (existingRole != null) {
+                    existUser.getRoles().add(existingRole);
+                } else {
+                    // Nếu vai trò chưa tồn tại, thêm vai trò mới vào cơ sở dữ liệu
+                    roleRepository.save(role);
+                    existUser.getRoles().add(role);
+                }
+            }
+            return userRepository.save(existUser);
+
+        }
+        return null;
+
+    }
 
     @Override
     public void deleteUser(Long id) {
@@ -68,6 +115,7 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteById(id);
     }
+
 
     @Override
     public void updateUserBalance(Long id, BigDecimal balance) {
@@ -107,4 +155,22 @@ public class UserServiceImpl implements UserService {
 
 
 
+    public List<User> getAllUser() {
+        return userRepository.findAll();
+    }
+
+
+    @Override
+    public void activeUserStatus(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setActive(true);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserEmail(Long id, String email) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setEmail(email);
+        userRepository.save(user);
+    }
 }
