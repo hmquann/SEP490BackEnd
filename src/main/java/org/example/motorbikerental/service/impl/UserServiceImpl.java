@@ -62,37 +62,6 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User updateUser(Long id, User user) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (!userRepository.existsById(id)) {
-            throw new UsernameNotFoundException("User with id " + id + " not found");
-        }
-        if (optionalUser.isPresent()) {
-            User existUser = optionalUser.get();
-
-            existUser.setFirstName(user.getFirstName());
-            existUser.setLastName(user.getLastName());
-            existUser.setEmail(user.getEmail());
-            existUser.getRoles().clear();
-            for (Role role : user.getRoles()) {
-                // Kiểm tra xem vai trò đã tồn tại chưa
-                Role existingRole = roleRepository.findByName(role.getName());
-                if (existingRole != null) {
-                    existUser.getRoles().add(existingRole);
-                } else {
-                    // Nếu vai trò chưa tồn tại, thêm vai trò mới vào cơ sở dữ liệu
-                    roleRepository.save(role);
-                    existUser.getRoles().add(role);
-                }
-            }
-            return userRepository.save(existUser);
-
-        }
-        return null;
-
-    }
-
-    @Override
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("User with ID " + id + " not found");

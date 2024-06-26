@@ -17,8 +17,6 @@ public interface UserService {
 
     org.example.motorbikerental.entity.User getUserByToken(String token);
 
-    User updateUser(Long id, User user);
-
     void deleteUser(Long id);
 
     void updateUserBalance(Long id, BigDecimal balance);
