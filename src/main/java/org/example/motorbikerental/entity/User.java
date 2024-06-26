@@ -44,7 +44,7 @@ public class User implements UserDetails {
     @Column(name = "balance")
     private BigDecimal balance;
 
-
+    private String token;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

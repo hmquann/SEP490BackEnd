@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.motorbikerental.entity.Role;
 import org.example.motorbikerental.entity.User;
+import org.example.motorbikerental.exception.UserNotFoundException;
 import org.example.motorbikerental.repository.RoleRepository;
 import org.example.motorbikerental.repository.UserRepository;
 import org.example.motorbikerental.service.UserService;
@@ -22,7 +23,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-
+//    @Autowired
+//    private final VNPayConfig vnpayConfig;
 
     @Override
     public UserDetailsService userDetailsService() {
@@ -40,17 +42,31 @@ public class UserServiceImpl implements UserService {
         };
     }
 
+
+    @Override
+    public void activeUser(Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setActive(true);
+        userRepository.save(user);
+    }
+    public void toggleUserActiveStatus(Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setActive(!user.isActive());
+        userRepository.save(user);
+    }
+
+
+
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
     }
-
 
     @Override
     public User getUserByEmail(String email) {
         return userRepository.getUserByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
+                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
     }
 
     @Override
@@ -59,13 +75,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with token " + token + " not found"));
     }
 
-
+                .orElseThrow(() -> new UserNotFoundException("User with token " + token + " not found"));
+    }
 
     @Override
     public User updateUser(Long id, User user) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (!userRepository.existsById(id)) {
-            throw new UsernameNotFoundException("User with id " + id + " not found");
+            throw new UserNotFoundException("User with id " + id + " not found");
         }
         if (optionalUser.isPresent()) {
             User existUser = optionalUser.get();
@@ -99,6 +116,7 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteById(id);
     }
+
 
     @Override
     public void updateUserBalance(Long id, BigDecimal balance) {
@@ -138,4 +156,22 @@ public class UserServiceImpl implements UserService {
 
 
 
+    public List<User> getAllUser() {
+        return userRepository.findAll();
+    }
+
+
+    @Override
+    public void activeUserStatus(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setActive(true);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void updateUserEmail(Long id, String email) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setEmail(email);
+        userRepository.save(user);
+    }
 }
