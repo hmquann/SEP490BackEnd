@@ -4,7 +4,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.motorbikerental.entity.Role;
 import org.example.motorbikerental.entity.User;
-import org.example.motorbikerental.exception.UserNotFoundException;
 import org.example.motorbikerental.repository.RoleRepository;
 import org.example.motorbikerental.repository.UserRepository;
 import org.example.motorbikerental.service.UserService;
@@ -14,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +22,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-//    @Autowired
-//    private final VNPayConfig vnpayConfig;
+
 
     @Override
     public UserDetailsService userDetailsService() {
@@ -59,18 +58,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with id " + id + " not found"));
     }
+
 
     @Override
     public User getUserByEmail(String email) {
         return userRepository.getUserByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User with email " + email + " not found"));
     }
 
     @Override
     public User getUserByToken(String token) {
         return userRepository.findByToken(token)
+                .orElseThrow(() -> new UsernameNotFoundException("User with token " + token + " not found"));
+    }
+
                 .orElseThrow(() -> new UserNotFoundException("User with token " + token + " not found"));
     }
 
@@ -113,31 +116,49 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+
+    @Override
+    public void updateUserBalance(Long id, BigDecimal balance) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            BigDecimal currentBalance = user.getBalance();
+            if (currentBalance != null) {
+
+                BigDecimal newBalance = currentBalance.add(balance);
+                user.setBalance(newBalance);
+                userRepository.save(user);
+            } else {
+            }
+        } else {
+            System.out.println("User with ID " + id + " not found.");
+        }
+    }
+
+    @Override
+    public void withDrawMoney(Long id, BigDecimal amount) throws Exception {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            BigDecimal currentBalance = user.getBalance();
+            if(currentBalance.compareTo(amount) < 0) {
+                throw new Exception("Insufficient money");
+            }
+            BigDecimal newBalance = currentBalance.subtract(amount);
+            user.setBalance(newBalance);
+            userRepository.save(user);
+
+        }
+
+}
+
+
+
     public List<User> getAllUser() {
         return userRepository.findAll();
     }
 
-    public void updateUserBalance(Long userId, double amount) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-
-            Double currentBalance = user.getBalance();
-            if (currentBalance != null) {
-
-                double newBalance = currentBalance + amount;
-                user.setBalance(newBalance);
-                userRepository.save(user);
-            } else {
-                // Nếu balance là null, bạn có thể gán một giá trị mặc định hoặc xử lý theo cách khác
-                // Ví dụ: user.setBalance(amount);
-            }
-        } else {
-            // Xử lý khi không tìm thấy userId
-            System.out.println("User with ID " + userId + " not found.");
-        }
-
-    }
 
     @Override
     public void activeUserStatus(Long id) {

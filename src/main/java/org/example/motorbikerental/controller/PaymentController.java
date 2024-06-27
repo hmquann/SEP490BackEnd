@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/payment")
@@ -18,13 +19,13 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @GetMapping("/create_payment")
-    public ResponseEntity<?> createPayment(@RequestParam Long id, @RequestParam double amount) throws UnsupportedEncodingException {
+    public ResponseEntity<?> createPayment(@RequestParam Long id, @RequestParam BigDecimal amount) throws UnsupportedEncodingException {
         return paymentService.createPayment(id, amount);
     }
 
     @GetMapping("/return")
     public ResponseEntity<Void> returnPayment(@RequestParam String vnp_ResponseCode,
-                                              @RequestParam double amount,
+                                              @RequestParam BigDecimal amount,
                                               @RequestParam Long id,
                                               @RequestParam String vnp_TxnRef  ) {
         return paymentService.returnPayment(vnp_ResponseCode, amount, id, vnp_TxnRef);
