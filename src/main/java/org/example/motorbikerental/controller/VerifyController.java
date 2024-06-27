@@ -1,10 +1,13 @@
-package com.MotorbikeRental.controller;
+package org.example.motorbikerental.controller;
 
-import com.MotorbikeRental.entity.User;
-import com.MotorbikeRental.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.example.motorbikerental.entity.User;
+import org.example.motorbikerental.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/verify")

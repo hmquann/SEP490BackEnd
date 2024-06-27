@@ -1,4 +1,4 @@
-package com.MotorbikeRental.dto;
+package org.example.motorbikerental.dto;
 
 import lombok.Data;
 

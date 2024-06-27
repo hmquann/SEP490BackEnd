@@ -1,9 +1,9 @@
-package com.MotorbikeRental.controller;
+package org.example.motorbikerental.controller;
 
-import com.MotorbikeRental.entity.User;
-import com.MotorbikeRental.exception.UserNotFoundException;
-import com.MotorbikeRental.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import org.example.motorbikerental.entity.User;
+import org.example.motorbikerental.exception.UserNotFoundException;
+import org.example.motorbikerental.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,16 +55,5 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/{id}/toggle")
-    public ResponseEntity<?> toggleUser(@PathVariable Long id){
-        try {
-            userService.toggleUserActiveStatus(id);
-            // Return success message based on user's new status
-            String message = userService.getUserById(id).isActive() ? "User activated successfully" : "User deactivated successfully";
-            return new ResponseEntity<>(message, HttpStatus.OK);
-        } catch (UserNotFoundException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
-    }
 
 }
