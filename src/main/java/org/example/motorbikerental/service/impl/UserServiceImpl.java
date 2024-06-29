@@ -8,13 +8,16 @@ import org.example.motorbikerental.exception.UserNotFoundException;
 import org.example.motorbikerental.repository.RoleRepository;
 import org.example.motorbikerental.repository.UserRepository;
 import org.example.motorbikerental.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -22,8 +25,6 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-//    @Autowired
-//    private final VNPayConfig vnpayConfig;
 
     @Override
     public UserDetailsService userDetailsService() {
@@ -72,6 +73,11 @@ public class UserServiceImpl implements UserService {
     public User getUserByToken(String token) {
         return userRepository.findByToken(token)
                 .orElseThrow(() -> new UserNotFoundException("User with token " + token + " not found"));
+    }
+
+    @Override
+    public User updateUser(Long id, User user) {
+        return null;
     }
 
     @Override
@@ -152,4 +158,10 @@ public class UserServiceImpl implements UserService {
         user.setEmail(email);
         userRepository.save(user);
     }
+
+    @Override
+    public String getUserNameByEmail(String email) {
+        return userRepository.getUserNameByEmail(email);
+    }
 }
+

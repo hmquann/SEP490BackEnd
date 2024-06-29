@@ -9,6 +9,7 @@ import org.example.motorbikerental.dto.RefreshTokenRequest;
 import org.example.motorbikerental.dto.SigninRequest;
 import org.example.motorbikerental.entity.User;
 import org.example.motorbikerental.service.AuthenticationService;
+import org.example.motorbikerental.service.EmailService;
 import org.example.motorbikerental.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

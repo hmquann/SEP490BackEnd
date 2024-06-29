@@ -6,6 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.example.motorbikerental.dto.JwtAuthenticationResponse;
 import org.example.motorbikerental.dto.RefreshTokenRequest;
 import org.example.motorbikerental.dto.SigninRequest;
+import org.example.motorbikerental.dto.SignupRequest;
 import org.example.motorbikerental.entity.Role;
 import org.example.motorbikerental.entity.User;
 import org.example.motorbikerental.exception.InactiveUserException;
@@ -39,6 +40,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JWTService jwtService;
     private final RoleRepository roleRepository;
 
+
+    @Override
+    public User signUp(SignupRequest signupRequest) {
+        return null;
+    }
 
     @Override
     public JwtAuthenticationResponse signin(SigninRequest signinRequest) {
@@ -102,6 +108,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             return jwtAuthenticationResponse;
         }
+        return null;
+    }
+
+    @Override
+    public String checkEmail(String email) {
         return null;
     }
 
