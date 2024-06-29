@@ -4,7 +4,6 @@ package org.example.motorbikerental.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.math.BigDecimal;
 import java.util.Date;
 

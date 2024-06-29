@@ -1,4 +1,5 @@
 package org.example.motorbikerental.repository;
+
 import jakarta.transaction.Transactional;
 import org.example.motorbikerental.entity.Role;
 import org.example.motorbikerental.entity.User;
@@ -42,4 +43,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.email = :emailOrPhone OR u.phone = :emailOrPhone")
     Optional<User> findByEmailOrPhone(@Param("emailOrPhone") String emailOrPhone);
+    @Query("SELECT CONCAT(u.lastName,' ',u.firstName) FROM User u WHERE u.email = :email")
+    String getUserNameByEmail(@Param("email") String email);
 }

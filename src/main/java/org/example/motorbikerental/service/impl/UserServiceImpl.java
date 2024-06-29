@@ -7,14 +7,17 @@ import org.example.motorbikerental.entity.User;
 import org.example.motorbikerental.repository.RoleRepository;
 import org.example.motorbikerental.repository.UserRepository;
 import org.example.motorbikerental.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -22,7 +25,6 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-
 
     @Override
     public UserDetailsService userDetailsService() {
@@ -173,4 +175,10 @@ public class UserServiceImpl implements UserService {
         user.setEmail(email);
         userRepository.save(user);
     }
+
+    @Override
+    public String getUserNameByEmail(String email) {
+        return userRepository.getUserNameByEmail(email);
+    }
 }
+

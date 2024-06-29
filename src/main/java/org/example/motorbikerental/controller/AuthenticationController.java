@@ -2,15 +2,13 @@ package org.example.motorbikerental.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import org.example.motorbikerental.dto.ChangeEmailRequest;
-import org.example.motorbikerental.dto.JwtAuthenticationResponse;
-import org.example.motorbikerental.dto.RefreshTokenRequest;
-import org.example.motorbikerental.dto.SigninRequest;
+import org.example.motorbikerental.dto.*;
 import org.example.motorbikerental.entity.User;
 import org.example.motorbikerental.service.AuthenticationService;
+import org.example.motorbikerental.service.EmailService;
 import org.example.motorbikerental.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,7 +21,6 @@ public class AuthenticationController {
     private final UserService userService;
 
 
-
     @RequestMapping (value="/signup",method =RequestMethod.POST)
     public ResponseEntity<User> signUp(@RequestBody SignupRequest signupRequest, HttpServletRequest httpServletRequest){
         User user = authenticationService.signUp(signupRequest);
@@ -32,18 +29,6 @@ public class AuthenticationController {
         emailService.sendVerificationEmail(user, newUrl.replace(httpServletRequest.getServletPath(),""));
         return ResponseEntity.ok(user);
 
-    }
-
-    @CrossOrigin
-    @PostMapping("/signin")
-    public ResponseEntity<?> signin(@RequestBody SigninRequest signinRequest){
-            return ResponseEntity.ok(authenticationService.signin(signinRequest));
-    }
-
-
-    @PostMapping("/refresh")
-    public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
-        return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
     }
 
     @RequestMapping (value="/changeEmail",method =RequestMethod.POST)
@@ -56,6 +41,23 @@ public class AuthenticationController {
         emailService.sendChangeEmail(user, newUrl.replace(httpServletRequest.getServletPath(),""), newEmail);
         return ResponseEntity.ok(user);
 
+    }
+
+    @CrossOrigin
+    @PostMapping("/signin")
+    public ResponseEntity<?> signin(@Validated @RequestBody SigninRequest signinRequest){
+
+        return ResponseEntity.ok(authenticationService.signin(signinRequest));
+    }
+
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
+        return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
+    }
+
+    public ResponseEntity<JwtAuthenticationResponse> demo(@RequestBody RefreshTokenRequest refreshTokenRequest){
+        return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
     }
 
 

@@ -44,6 +44,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
+    public User signUp(SignupRequest signupRequest) {
+        return null;
+    }
+
+    @Override
     public JwtAuthenticationResponse signin(SigninRequest signinRequest) {
         User user = userRepository.findByEmailOrPhone(signinRequest.getEmailOrPhone()).orElseThrow(
                 () -> new InvalidCredentialsException("Invalid email ")
@@ -140,6 +145,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             return jwtAuthenticationResponse;
         }
+        return null;
+    }
+
+    @Override
+    public String checkEmail(String email) {
         return null;
     }
 
