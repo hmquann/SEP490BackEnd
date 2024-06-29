@@ -1,6 +1,8 @@
 package org.example.motorbikerental.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.motorbikerental.entity.User;
+import org.example.motorbikerental.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

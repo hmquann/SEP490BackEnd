@@ -77,11 +77,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(Long id, User user) {
-        return null;
-    }
-
-    @Override
-    public User updateUser(Long id, User user) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (!userRepository.existsById(id)) {
             throw new UserNotFoundException("User with id " + id + " not found");
