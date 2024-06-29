@@ -1,21 +1,21 @@
 package org.example.motorbikerental.dto;
 
-
 import lombok.Data;
 
 @Data
 public class SignupRequest {
 
-        private String firstname;
+    private String firstname;
 
-        private String lastname;
+    private String lastname;
 
-        private String email;
+    private String email;
 
-        private String phone;
+    private String phone;
 
-        private String password;
+    private String password;
 
-        private boolean gender;
+    private boolean gender;
 
 }
+

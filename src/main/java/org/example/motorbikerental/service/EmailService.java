@@ -1,5 +1,4 @@
 package org.example.motorbikerental.service;
-
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.motorbikerental.entity.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,3 +15,4 @@ public interface EmailService {
     String sendChangeEmail(User user, String url,String newEmail);
 
 }
+

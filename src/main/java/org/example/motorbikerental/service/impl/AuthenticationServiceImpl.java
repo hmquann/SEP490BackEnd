@@ -9,6 +9,7 @@ import org.example.motorbikerental.dto.SigninRequest;
 import org.example.motorbikerental.dto.SignupRequest;
 import org.example.motorbikerental.entity.Role;
 import org.example.motorbikerental.entity.User;
+import org.example.motorbikerental.exception.DuplicateUserException;
 import org.example.motorbikerental.exception.InactiveUserException;
 import org.example.motorbikerental.exception.InvalidCredentialsException;
 import org.example.motorbikerental.repository.RoleRepository;
@@ -16,6 +17,8 @@ import org.example.motorbikerental.repository.UserRepository;
 import org.example.motorbikerental.service.AuthenticationService;
 import org.example.motorbikerental.service.JWTService;
 import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -36,7 +39,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
-
     private final JWTService jwtService;
     private final RoleRepository roleRepository;
 
@@ -93,7 +95,42 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return jwtAuthenticationResponse;
     }
 
+    @Override
+    public User signUp(SignupRequest signupRequest){
+        if(userRepository.existsByEmail(signupRequest.getEmail())){
+            throw new DuplicateUserException("Email existed");
+        }
 
+        if(userRepository.existsByPhone(signupRequest.getPhone())){
+            throw new DuplicateUserException("Phone existed");
+        }
+
+
+        User user = new User();
+
+        user.setEmail(signupRequest.getEmail());
+        user.setFirstName(signupRequest.getFirstname());
+        user.setLastName(signupRequest.getLastname());
+        user.setPhone(signupRequest.getPhone());
+        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        user.setGender(signupRequest.isGender());
+        user.setBalance(0.00);
+        user.setActive(false);
+        user.setBalance(Double.valueOf(0.0));
+        Role defaultRole = roleRepository.findByName("USER");
+        if (defaultRole == null) {
+            defaultRole = new Role("USER");
+            roleRepository.save(defaultRole);
+        }
+
+        user.getRoles().add(defaultRole);
+
+        String randomCode = RandomStringUtils.randomAlphanumeric(64);
+        user.setToken(randomCode);
+        user.setActive(false);
+        return userRepository.save(user);
+
+    }
     @Override
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest){
         String userEmail = jwtService.extractUsername(refreshTokenRequest.getToken());
