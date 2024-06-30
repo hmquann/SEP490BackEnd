@@ -5,6 +5,7 @@ import org.example.motorbikerental.entity.User;
 import org.example.motorbikerental.exception.UserNotFoundException;
 import org.example.motorbikerental.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,12 @@ public class UserController {
         return userService.getAllUser();
     }
 
+    @GetMapping("/allUser/{page}/{pageSize}")
+    public ResponseEntity<Page<User>> listBrandWithPagination(@PathVariable int page, @PathVariable int pageSize) {
+        Page<User> userPage = userService.getUserByPagination(page,pageSize);
+        return ResponseEntity.ok(userPage);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id){
         User user = userService.getUserById(id);
@@ -51,6 +58,18 @@ public class UserController {
             userService.deleteUser(id);
             return new ResponseEntity<>("User with ID " + id + " is deleted", HttpStatus.OK);
         } catch (EntityNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PatchMapping("/{id}/toggle")
+    public ResponseEntity<?> toggleUser(@PathVariable Long id){
+        try {
+            userService.toggleUserActiveStatus(id);
+            // Return success message based on user's new status
+            String message = userService.getUserById(id).isActive() ? "User activated successfully" : "User deactivated successfully";
+            return new ResponseEntity<>(message, HttpStatus.OK);
+        } catch (UserNotFoundException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }

@@ -4,10 +4,13 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.motorbikerental.entity.Role;
 import org.example.motorbikerental.entity.User;
+import org.example.motorbikerental.exception.UserNotFoundException;
 import org.example.motorbikerental.repository.RoleRepository;
 import org.example.motorbikerental.repository.UserRepository;
 import org.example.motorbikerental.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +26,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
@@ -42,7 +46,6 @@ public class UserServiceImpl implements UserService {
         };
     }
 
-
     @Override
     public void activeUser(Long id){
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -55,7 +58,10 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-
+    @Override
+    public Page<User> getUserByPagination(int page, int pageSize) {
+        return userRepository.findAll(PageRequest.of(page,pageSize));
+    }
 
     @Override
     public User getUserById(Long id) {
@@ -76,8 +82,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with token " + token + " not found"));
     }
 
-                .orElseThrow(() -> new UserNotFoundException("User with token " + token + " not found"));
-    }
 
     @Override
     public User updateUser(Long id, User user) {
@@ -104,7 +108,6 @@ public class UserServiceImpl implements UserService {
                 }
             }
             return userRepository.save(existUser);
-
         }
         return null;
 
@@ -169,16 +172,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    @Override
     public void updateUserEmail(Long id, String email) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setEmail(email);
         userRepository.save(user);
     }
 
-    @Override
-    public String getUserNameByEmail(String email) {
-        return userRepository.getUserNameByEmail(email);
-    }
 }
 
